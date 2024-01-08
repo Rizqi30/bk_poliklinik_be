@@ -47,6 +47,13 @@ class JadwalPeriksaController extends Controller
             return response()->json($validator->errors(), 400);
         }
 
+        $existingActiveRecord = JadwalPeriksa::where('status', 'Y')->where('id_dokter', $request->input('id_dokter'))->first();
+        if ($existingActiveRecord && $request->input('status') === 'Y') {
+            return response()->json([
+                'error' => 'Jadwal Dengan Status Aktif Ditemukan',
+            ], 400);
+        }
+
         $jadwal_periksa = JadwalPeriksa::create(
             array_merge(
                 $validator->validated(),
@@ -74,6 +81,13 @@ class JadwalPeriksaController extends Controller
 
         if ($validator->fails()) {
             return response()->json($validator->errors(), 400);
+        }
+
+        $existingActiveRecord = JadwalPeriksa::where('status', 'Y')->where('id_dokter', $request->input('id_dokter'))->first();
+        if ($existingActiveRecord && $request->input('status') === 'Y') {
+            return response()->json([
+                'error' => 'Jadwal Dengan Status Aktif Ditemukan',
+            ], 400);
         }
 
         $jadwal_periksa = JadwalPeriksa::findOrFail($id);
